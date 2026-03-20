@@ -7,7 +7,6 @@
 | Hong Wei          | 422972 |
 | Gustavo Maia      | 357154 |
 
----
 
 ## Milestone 1 (20th March, 5pm)
 
@@ -17,7 +16,6 @@ This is a preliminary milestone to define the goals of the project and assess th
 
 *(max. 2000 characters per section)*
 
----
 
 ## Dataset
 
@@ -39,7 +37,6 @@ To answer this question, we will analyze the distribution of key features such a
 
 In addition, we will take into account the limitations of the data, especially detection biases, since current observation methods tend to favor larger and closer planets.
 
----
 
 ## Exploratory Data Analysis
 
@@ -47,7 +44,6 @@ Before performing the visualizations, a preprocessing step will be carried out o
 
 We will then compute basic statistics and visualize distributions of key variables such as planet mass, radius, and orbital period. This initial exploration will help us better understand the structure of the data and guide further analysis.
 
----
 
 ## Related Work
 
@@ -57,13 +53,11 @@ Our approach aims to focus specifically on identifying Earth-like planets and un
 
 In terms of inspiration, we draw from existing scientific visualizations and online data visualization platforms that present astronomical data in an accessible and interactive way.
 
----
 
 ## Milestone 2 (17th April, 5pm)
 
 **10% of the final grade**
 
----
 
 ## Milestone 3 (29th May, 5pm)
 
