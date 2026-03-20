@@ -23,11 +23,10 @@ This is a preliminary milestone to define the goals of the project and assess th
 >
 > Hint: some good pointers for finding quality publicly available datasets (Google dataset search, Kaggle, etc.).
 
-The dataset used in this project contains information about discovered exoplanets and their host stars. It includes several important features such as planet mass, radius, orbital period, and other characteristics related to the stars they orbit.
-
-The data was obtained from publicly available sources and is widely used in scientific research. It provides a large number of observations, which makes it suitable for exploring patterns and relationships between different planetary properties.
-
-However, like many real-world datasets, it contains missing values and some inconsistencies. Therefore, a preprocessing step will be necessary before performing any meaningful analysis or visualization.
+The dataset used in this project comes from the NASA Exoplanet Archive and contains detailed information about confirmed exoplanets and their host stars. Each row corresponds to a detected exoplanet, with features describing both the planet and the star it orbits.
+The dataset includes key variables such as planet mass (`pl_bmasse`), radius (`pl_rade`), orbital period (`pl_orbper`), equilibrium temperature (`pl_eqt`), and discovery method (`discoverymethod`). It also contains information about the host star, such as its mass, radius, and effective temperature.
+This dataset is widely used in scientific research and provides a large number of observations, making it suitable for identifying patterns and relationships between planetary and stellar properties.
+However, the dataset contains missing values and some inconsistencies, which will require preprocessing (e.g., filtering relevant features and handling missing data) before performing meaningful analysis and visualization.
 
 Dataset: https://exoplanetarchive.ipac.caltech.edu/cgi-bin/TblView/nph-tblView?app=ExoTbls&config=PS&constraint=default_flag=1&constraint=disc_facility+like+%27%25TESS%25%27
 
@@ -38,11 +37,9 @@ Dataset: https://exoplanetarchive.ipac.caltech.edu/cgi-bin/TblView/nph-tblView?a
 > - What am I trying to show with my visualization?
 > - Think of an overview for the project, your motivation, and the target audience.
 
-The main goal of this project is to understand how common Earth-like planets are among the currently detected exoplanets. More specifically, we aim to explore whether planets with characteristics similar to Earth (in terms of size and temperature) are rare or relatively frequent in the available data.
-
-To answer this question, we will analyze the distribution of key features such as planet radius, mass, and equilibrium temperature. This will allow us to identify potential Earth-like candidates and compare them to the rest of the dataset.
-
-In addition, we will take into account the limitations of the data, especially detection biases, since current observation methods tend to favor larger and closer planets.
+The main objective of this project is to explore how exoplanets differ from each other and to understand how common Earth-like planets are within the currently known population. Through our visualizations, we aim to highlight the distribution of key characteristics such as planet mass, radius, orbital period, and temperature, and to identify where Earth-like planets are located within these distributions.
+More specifically, we want to show whether planets similar to Earth are rare or simply underrepresented due to current detection methods. By comparing different features and observing potential patterns or clusters, we aim to better understand the diversity of exoplanets and the limits of current observations.
+Our motivation comes from the increasing interest in discovering habitable planets and understanding our place in the universe. This project is intended for a general audience with basic knowledge of science, as well as students interested in astronomy and data visualization. The goal is to present complex astronomical data in a clear, intuitive, and visually engaging way.
 
 
 ## Exploratory Data Analysis
@@ -50,9 +47,9 @@ In addition, we will take into account the limitations of the data, especially d
 >
 > - Show some basic statistics and get insights about the data
 
-Before performing the visualizations, a preprocessing step will be carried out on the dataset. This includes handling missing values, selecting relevant features, and ensuring consistency in units.
-
-We will then compute basic statistics and visualize distributions of key variables such as planet mass, radius, and orbital period. This initial exploration will help us better understand the structure of the data and guide further analysis.
+Before performing visualizations, we will preprocess the dataset by handling missing values and selecting the most relevant features (such as planet mass, radius, and orbital period). We will also ensure consistency in units when necessary.
+We will then compute basic statistics (mean, median, distribution) and visualize key variables to better understand the structure of the data. This step will help identify patterns, outliers, and potential relationships between variables, which will guide the rest of the analysis.
+All preprocessing and analysis steps will be implemented in the `analysis.ipynb` notebook.
 
 
 ## Related Work
@@ -61,11 +58,10 @@ We will then compute basic statistics and visualize distributions of key variabl
 > - What source of inspiration do you take? Visualizations that you found on other websites or magazines (might be unrelated to your data).
 > - In case you are using a dataset that you have already explored in another context, you are required to share the report of that work to outline the differences with the submission for this class.
 
-Several studies and visualizations have already explored exoplanet datasets, mainly focusing on planet classification and detection methods. These works often highlight the diversity of exoplanets and the biases introduced by current detection techniques.
-
-Our approach aims to focus specifically on identifying Earth-like planets and understanding how their detection may be influenced by observational limitations.
-
-In terms of inspiration, we draw from existing scientific visualizations and online data visualization platforms that present astronomical data in an accessible and interactive way.
+Previous work on exoplanet datasets has mainly focused on classifying planets based on their physical properties (such as mass and radius), studying detection methods, and identifying general trends in exoplanet populations. Many visualizations highlight the diversity of exoplanets or compare discovery techniques (e.g., transit vs radial velocity). For this milestone, we have identified these common approaches but have not yet conducted an in-depth comparison with specific prior studies. This will be developed in later stages of the project.
+Our approach is original in that we focus specifically on identifying Earth-like planets and analyzing how their apparent rarity may be influenced by detection biases. Instead of only describing the dataset, we aim to combine multiple features (such as size, temperature, and orbital characteristics) to better understand where Earth-like planets lie within the overall distribution.
+In terms of inspiration, we draw from existing scientific visualizations and online platforms that present astronomical data in an accessible and interactive way. This includes space-related dashboards, educational visualizations, and data storytelling websites that emphasize clarity and visual exploration.
+We are not reusing a dataset previously explored in another course or project.
 
 
 ## Milestone 2 (17th April, 5pm)
@@ -77,7 +73,6 @@ In terms of inspiration, we draw from existing scientific visualizations and onl
 
 **80% of the final grade**
 
----
 
 ## Late policy
 
