@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CosmoViz — Is Earth Rare?</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500&family=IBM+Plex+Mono:wght@400&display=swap">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- ── LOADING OVERLAY ───────────────────────────────────────────────────── -->
+  <div id="loading-overlay">
+    <div class="loader-box">
+      <div class="loader-spinner"></div>
+      <p>Loading 762 exoplanets…</p>
+    </div>
+  </div>
+
+  <!-- ── TOP NAV ───────────────────────────────────────────────────────────── -->
+  <nav id="top-nav">
+    <span class="nav-brand">🪐 CosmoViz</span>
+    <div class="nav-links">
+      <a href="#narrative-section">Story</a>
+      <a href="#explorer-section">Explorer</a>
+      <a href="#bias-section">Bias lens</a>
+      <a href="#skymap-section">Sky map</a>
+      <a href="#timeline-section">Timeline</a>
+    </div>
+    <span class="nav-data">
+      <span id="total-planet-count">762</span> TESS exoplanets · NASA Archive 2026
+    </span>
+  </nav>
+
+  <!-- ── HERO ──────────────────────────────────────────────────────────────── -->
+  <header id="hero">
+    <div class="hero-content">
+      <h1>Is Earth rare?</h1>
+      <p class="hero-sub">
+        762 exoplanets confirmed by NASA's TESS mission.
+        Only one dot is Earth's twin. Or is it even there at all?
+      </p>
+      <p class="hero-context">
+        TESS — the Transiting Exoplanet Survey Satellite — has been scanning
+        the sky since 2018, finding planets that briefly dim their host star
+        as they pass in front of it. But the telescope can only see what its
+        design allows. This visualization explores what TESS finds,
+        what it misses, and where Earth would sit if we could see everything.
+      </p>
+      <a class="btn-primary" href="#narrative-section">Begin ↓</a>
+    </div>
+  </header>
+
+  <!-- ══════════════════════════════════════════════════════════════════════════
+       VIEW 1: NARRATIVE / SCROLLYTELLING
+  ═══════════════════════════════════════════════════════════════════════════════ -->
+  <section id="narrative-section">
+    <div class="sticky-container">
+      <svg id="narrative-scatter"></svg>
+      <div id="narrative-counter"></div>
+    </div>
+
+    <div class="scroll-steps">
+      <div class="narrative-step" data-step="0">
+        <p class="step-label">The full catalog</p>
+        <p>
+          <strong>762 exoplanets</strong> confirmed by NASA's TESS mission —
+          each dot a real world orbiting a real star.
+          The axes show <em>temperature</em> (how hot the planet's surface gets)
+          and <em>size</em> (relative to Earth).
+        </p>
+        <p class="step-note">
+          The white diamond ◇ is Earth — plotted where it would appear
+          using the same scales.
+        </p>
+      </div>
+
+      <div class="narrative-step" data-step="1">
+        <p class="step-label">Rocky worlds like Earth</p>
+        <p>
+          Only <strong>54 are rocky</strong> like Earth — just <strong>7%</strong>
+          of the catalog. Everything else is a gas giant, ice giant,
+          or something in between.
+        </p>
+        <p class="step-note">
+          "Rocky" means a radius smaller than 1.25 Earth radii (R⊕).
+          Above that threshold, planets likely retain thick hydrogen atmospheres.
+        </p>
+      </div>
+
+      <div class="narrative-step" data-step="2">
+        <p class="step-label">The mystery class</p>
+        <p>
+          <strong>259 are Sub-Neptunes</strong> — the single most common type,
+          with radii between 2 and 4 R⊕. Our Solar System has nothing like them.
+          They sit between Earth and Neptune in size but their composition
+          remains poorly understood.
+        </p>
+        <p class="step-note">
+          The dashed line at 1.8 R⊕ is the <em>Fulton radius gap</em> —
+          a real scarcity of planets at exactly that size, likely caused by
+          stellar radiation stripping their atmospheres.
+        </p>
+      </div>
+
+      <div class="narrative-step" data-step="3">
+        <p class="step-label">Earth's orbital neighborhood — empty</p>
+        <p>
+          Only <strong>1 planet</strong> in the entire TESS catalog has an
+          orbital year longer than 300 days. Earth orbits in 365.
+          The red box shows where Earth-analog worlds should live.
+          It is almost completely empty.
+        </p>
+        <p class="step-note">
+          This is not because these planets don't exist.
+          TESS observes each part of the sky for only ~27 days at a time —
+          not long enough to detect a planet with a year-long orbit.
+        </p>
+      </div>
+
+      <div class="narrative-step" data-step="4">
+        <p class="step-label">The telescope's blind spot</p>
+        <p>
+          This isn't because Earth-like planets don't exist —
+          it's because <em>TESS cannot find them</em>.
+          Every catalog reflects the instrument that built it.
+          The data below lets you explore the full picture.
+        </p>
+        <a id="explorer-entry-btn" class="btn-primary" href="#explorer-section"
+           style="display:none; margin-top:1.2rem">
+          Explore the data →
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── CONTROL BAR ───────────────────────────────────────────────────────── -->
+  <div id="control-bar">
+    <div class="control-bar-left">
+      <span id="count-number">—</span>
+      <span class="control-bar-label"> planets shown</span>
+    </div>
+    <div class="control-bar-note">
+      Hover any planet for details · Click to pin · Use sliders to define "Earth-like"
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════════════════════════
+       VIEW 2: PLANET EXPLORER SCATTER
+  ═══════════════════════════════════════════════════════════════════════════════ -->
+  <section id="explorer-section">
+    <h2>Planet explorer</h2>
+    <p class="section-subtitle">
+      Each dot is one exoplanet. Position encodes its physical character.
+      Use the sliders on the right to define what "Earth-like" means to you.
+    </p>
+
+    <!-- Reading guide -->
+    <div class="reading-guide">
+      <div class="reading-guide-grid">
+        <div class="rg-item">
+          <span class="rg-label">X axis — Equilibrium temperature</span>
+          <span class="rg-desc">
+            How hot the planet's surface would be if it had no atmosphere,
+            calculated from its star's brightness and orbital distance.
+            Earth's is ~255 K (−18 °C). The <span class="tag-green">green band</span>
+            marks the rough habitable zone for a Sun-like star.
+          </span>
+        </div>
+        <div class="rg-item">
+          <span class="rg-label">Y axis — Planet radius</span>
+          <span class="rg-desc">
+            Size relative to Earth (R⊕ = 1 Earth radius = 6,371 km).
+            Both axes use a <em>logarithmic</em> scale because the values span
+            three orders of magnitude — a linear scale would crush
+            all rocky planets into one corner.
+          </span>
+        </div>
+        <div class="rg-item">
+          <span class="rg-label">Dot size — Planet mass</span>
+          <span class="rg-desc">
+            Circle area scales with planet mass (log scale). A hollow circle
+            means the mass was never measured — common for planets detected
+            by transit alone, without a follow-up radial velocity observation.
+          </span>
+        </div>
+        <div class="rg-item">
+          <span class="rg-label">Dashed line — Fulton radius gap</span>
+          <span class="rg-desc">
+            A real desert in planet sizes near 1.8 R⊕. Planets just above
+            this line likely have puffy hydrogen atmospheres that evaporate
+            away over millions of years, leaving bare rocky cores below the gap.
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <div id="explorer-layout">
+      <div id="scatter-container"></div>
+
+      <div id="sidebar">
+        <div id="legend-container"></div>
+        <div id="slider-panel"></div>
+      </div>
+    </div>
+
+    <!-- Insight box -->
+    <div class="insight-row">
+      <div class="insight-box">
+        <span class="insight-number">54</span>
+        <span class="insight-label">rocky planets<br><span class="insight-note">radius &lt; 1.25 R⊕</span></span>
+      </div>
+      <div class="insight-box">
+        <span class="insight-number">259</span>
+        <span class="insight-label">sub-Neptunes<br><span class="insight-note">most common class, 2–4 R⊕</span></span>
+      </div>
+      <div class="insight-box">
+        <span class="insight-number">28</span>
+        <span class="insight-label">temperate planets<br><span class="insight-note">equilibrium temp &lt; 350 K</span></span>
+      </div>
+      <div class="insight-box accent">
+        <span class="insight-number">1</span>
+        <span class="insight-label">planet in the HZ<br><span class="insight-note">conservative insolation criterion</span></span>
+      </div>
+    </div>
+
+    <!-- Pinned detail card (populated by tooltip.js on click) -->
+    <div id="detail-card" style="display:none;"></div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════════════════════════════════
+       VIEW 3: DETECTION BIAS
+  ═══════════════════════════════════════════════════════════════════════════════ -->
+  <section id="bias-section">
+    <h2>Detection bias lens</h2>
+    <p class="section-subtitle">
+      The same planets, now mapped by <em>how long their year is</em> (X)
+      versus how big they are (Y). This view reveals why the catalog looks the way it does.
+    </p>
+
+    <!-- Reading guide -->
+    <div class="reading-guide">
+      <div class="reading-guide-grid">
+        <div class="rg-item">
+          <span class="rg-label">X axis — Orbital period (days)</span>
+          <span class="rg-desc">
+            How long the planet takes to orbit its star. Earth's year is 365 days.
+            Most TESS planets orbit in under 13 days — closer to their star than
+            Mercury is to the Sun. The log scale stretches the short-period end
+            to make them visible.
+          </span>
+        </div>
+        <div class="rg-item">
+          <span class="rg-label">Orange dashed line — TESS 27-day limit</span>
+          <span class="rg-desc">
+            TESS surveys each strip of sky for approximately 27 days before
+            moving on. To confirm a planet, astronomers need to observe at least
+            two transits. Any planet with a period &gt; 13 days is already hard
+            to catch; beyond 27 days, detection becomes rare.
+          </span>
+        </div>
+        <div class="rg-item">
+          <span class="rg-label">Red box — Earth-analog zone</span>
+          <span class="rg-desc">
+            The region where a rocky Earth-like planet should live: period
+            300–430 days, radius 0.8–1.25 R⊕. Nearly empty. This is not
+            because these planets don't exist — it's because TESS is
+            structurally unable to find them.
+          </span>
+        </div>
+        <div class="rg-item">
+          <span class="rg-label">Dot color — Discovery year</span>
+          <span class="rg-desc">
+            Lighter blue = earlier discovery (2018–2019), darker blue = recent
+            (2025–2026). Use the timeline slider to animate how the catalog
+            grew year by year and watch where new planets appear.
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Year slider controls -->
+    <div id="year-control">
+      <label for="year-slider">Discovery year: <strong><span id="year-display">2026</span></strong></label>
+      <input type="range" id="year-slider" min="2018" max="2026" step="1" value="2026">
+      <button id="year-play">▶ Play</button>
+      <span id="planet-year-count" class="control-bar-label"></span>
+    </div>
+
+    <div id="bias-container"></div>
+
+    <!-- "Would TESS detect Earth?" info panel -->
+    <div id="tess-earth-toggle">
+      <button id="tess-earth-btn">Would TESS detect Earth?</button>
+      <div id="tess-earth-panel" style="display:none;">
+        <p>
+          <strong>Transit probability:</strong> For TESS to detect Earth, our
+          planet would need to pass directly in front of the Sun as seen from
+          the spacecraft. The probability of any given star being aligned this
+          way is R★/a ≈ <strong>0.5%</strong> — only 1 in 200 star systems.
+        </p>
+        <p>
+          <strong>Transit signal depth:</strong> Earth's disk covers only
+          0.0084% of the Sun's disk — a brightness dip of ~84 parts per million.
+          Most TESS targets are too faint and noisy to detect a signal this small.
+          The Kepler mission, purpose-built for this, needed <em>4 years</em>
+          of continuous staring to confirm Earth-like planets.
+        </p>
+        <p>
+          <strong>Orbital period:</strong> At 365 days, Earth completes only
+          one transit per year. TESS observes each sky sector for ~27 days.
+          Catching a single transit is not enough to confirm a planet —
+          you need multiple transits. Earth would require 13+ consecutive
+          sectors (over a year) of uninterrupted coverage on the same star.
+        </p>
+        <p class="verdict">
+          Verdict: TESS would almost certainly <strong>not</strong> detect Earth —
+          even if the Sun were one of its target stars.
+        </p>
+      </div>
+    </div>
+
+    <!-- Bias insight -->
+    <div class="insight-row" style="margin-top:2rem;">
+      <div class="insight-box">
+        <span class="insight-number">75%</span>
+        <span class="insight-label">of TESS planets<br><span class="insight-note">orbit in under 13 days</span></span>
+      </div>
+      <div class="insight-box">
+        <span class="insight-number">1</span>
+        <span class="insight-label">planet with a year &gt; 300 days<br><span class="insight-note">out of 762 confirmed</span></span>
+      </div>
+      <div class="insight-box accent">
+        <span class="insight-number">0.5%</span>
+        <span class="insight-label">transit probability<br><span class="insight-note">for an Earth-Sun system</span></span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════════════════════════════════
+       VIEW 4: SKY MAP
+  ═══════════════════════════════════════════════════════════════════════════════ -->
+  <section id="skymap-section">
+    <h2>Where are they in the sky?</h2>
+    <p class="section-subtitle">
+      Every confirmed TESS planet plotted by its actual position on the celestial sphere.
+      Color shows how hot the planet is. Size shows how close its star is to us.
+    </p>
+
+    <!-- Reading guide -->
+    <div class="reading-guide">
+      <div class="reading-guide-grid">
+        <div class="rg-item">
+          <span class="rg-label">Projection — Mollweide</span>
+          <span class="rg-desc">
+            The full sky unrolled onto a flat ellipse. Right Ascension (RA) runs
+            horizontally like longitude — measured in hours from 0h to 24h.
+            Declination (Dec) runs vertically like latitude — from +90° (north
+            pole) to −90° (south pole). The Milky Way runs diagonally across the map.
+          </span>
+        </div>
+        <div class="rg-item">
+          <span class="rg-label">Dot color — Equilibrium temperature</span>
+          <span class="rg-desc">
+            Cool blue dots are temperate worlds (below ~500 K).
+            Warm pink/white dots are scorching hot planets (above 2,000 K).
+            Most TESS planets are hot — a direct consequence of finding
+            planets that orbit close to their stars.
+          </span>
+        </div>
+        <div class="rg-item">
+          <span class="rg-label">Dot size — Distance to Earth</span>
+          <span class="rg-desc">
+            Larger dots are nearby stars (under ~15 parsecs, or 50 light-years).
+            Smaller dots are far away. Nearby planets are scientifically precious —
+            they are the best candidates for follow-up atmospheric studies with
+            JWST, the James Webb Space Telescope.
+          </span>
+        </div>
+        <div class="rg-item">
+          <span class="rg-label">Clusters and patterns</span>
+          <span class="rg-desc">
+            You may notice that planets are not uniformly spread across the sky.
+            TESS observes in long rectangular "sectors" oriented to avoid the
+            ecliptic plane. The coverage pattern reflects these sectors — some
+            regions near the ecliptic poles were observed for much longer,
+            producing denser clusters of discoveries.
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <div id="skymap-container"></div>
+
+    <div class="sky-context">
+      <p>
+        <strong>A note on distance.</strong>
+        The closest planetary system in this dataset is about 7 parsecs away —
+        roughly 23 light-years. Light from those planets left before many of us were born.
+        The farthest confirmed TESS planet is nearly 1,000 parsecs (3,260 light-years) away.
+        Every dot on this map is a sun seen across centuries or millennia of travel time.
+      </p>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════════════════════════════════
+       VIEW 5: TIMELINE
+  ═══════════════════════════════════════════════════════════════════════════════ -->
+  <section id="timeline-section">
+    <h2>Discovery timeline</h2>
+    <p class="section-subtitle">
+      How the TESS exoplanet catalog grew year by year, colored by planet type.
+      Click any colored band to filter all views to that planet class.
+    </p>
+
+    <div id="timeline-container"></div>
+
+    <!-- Timeline context -->
+    <div class="reading-guide" style="margin-top:1.5rem;">
+      <div class="reading-guide-grid">
+        <div class="rg-item">
+          <span class="rg-label">Why the ramp-up?</span>
+          <span class="rg-desc">
+            TESS launched in April 2018 and began science operations mid-year.
+            The first planets published in 2019 were low-hanging fruit: large
+            planets on short orbits that were easy to confirm. As the mission
+            matured and ground-based follow-up pipelines improved,
+            confirmation rates accelerated sharply — 178 planets in 2024 alone.
+          </span>
+        </div>
+        <div class="rg-item">
+          <span class="rg-label">Are smaller planets catching up?</span>
+          <span class="rg-desc">
+            Watch the rocky (orange) and super-Earth (green) bands over time.
+            Early years are dominated by gas giants. From 2022 onward,
+            smaller planets make up a growing fraction — reflecting improved
+            radial-velocity spectrographs that can measure the tiny stellar
+            wobbles needed to confirm low-mass worlds.
+          </span>
+        </div>
+        <div class="rg-item">
+          <span class="rg-label">Sub-Neptunes persist</span>
+          <span class="rg-desc">
+            The blue sub-Neptune band is consistently the largest every year.
+            This is partly physical (they are genuinely common) and partly
+            instrumental (their size makes transits easy to detect and their
+            mass makes RV confirmation feasible). They are TESS's bread and butter.
+          </span>
+        </div>
+        <div class="rg-item">
+          <span class="rg-label">Click to filter</span>
+          <span class="rg-desc">
+            Clicking a color band isolates that planet class across the
+            Explorer and Bias views. This lets you compare, for example,
+            where rocky planets cluster in temperature/radius space versus
+            where gas giants do — using the same axes.
+          </span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── GLOSSARY ───────────────────────────────────────────────────────────── -->
+  <section id="glossary-section">
+    <h2>Key concepts</h2>
+    <p class="section-subtitle">
+      Terms used throughout this visualization, explained for a general audience.
+    </p>
+    <div class="glossary-grid">
+      <div class="glossary-item">
+        <dt>Equilibrium temperature</dt>
+        <dd>
+          The temperature a planet's surface would reach if it absorbed all
+          incoming starlight and radiated it back out evenly, with no atmosphere.
+          Earth's is ~255 K (−18 °C). The greenhouse effect raises the actual
+          surface temperature to ~288 K (+15 °C). Many exoplanets have equilibrium
+          temperatures exceeding 1,000 K — hotter than molten lava.
+        </dd>
+      </div>
+      <div class="glossary-item">
+        <dt>Earth radius (R⊕)</dt>
+        <dd>
+          A unit of planet size, where 1 R⊕ = 6,371 km (Earth's radius).
+          Planets smaller than ~1.25 R⊕ are likely rocky like Earth or Mars.
+          Between 1.25–4 R⊕ they are likely gaseous sub-Neptunes. Above 4 R⊕
+          they are Neptune-like or gas giant worlds.
+        </dd>
+      </div>
+      <div class="glossary-item">
+        <dt>Transit method</dt>
+        <dd>
+          TESS finds planets by watching stars for tiny periodic dips in brightness —
+          the shadow cast when a planet passes in front of the star. A planet the
+          size of Earth blocks only 0.0084% of the Sun's light. Jupiter-sized planets
+          block up to 1%. Bigger planets are easier to detect; this biases the catalog.
+        </dd>
+      </div>
+      <div class="glossary-item">
+        <dt>Habitable zone (HZ)</dt>
+        <dd>
+          The orbital distance range where liquid water could exist on a planet's
+          surface — often called the "Goldilocks zone." Its exact boundaries depend
+          on the star's temperature and luminosity. For a Sun-like G star, the HZ
+          spans roughly 0.95–1.37 au. For a cool red dwarf (M star), it shrinks
+          inward to 0.1–0.4 au.
+        </dd>
+      </div>
+      <div class="glossary-item">
+        <dt>Fulton radius gap</dt>
+        <dd>
+          A real scarcity of planets with radii between ~1.5 and ~2.0 R⊕, discovered
+          in 2017 using Kepler data. The leading explanation: planets in this size range
+          receive enough stellar radiation to completely strip their hydrogen/helium
+          atmospheres (photoevaporation), leaving either bare rocky cores below the gap
+          or failed giants with thick atmospheres above it.
+        </dd>
+      </div>
+      <div class="glossary-item">
+        <dt>Parsec (pc)</dt>
+        <dd>
+          A unit of distance used in astronomy. 1 parsec ≈ 3.26 light-years ≈
+          31 trillion km. The closest star to Earth (Proxima Centauri) is 1.3 pc away.
+          The TESS exoplanets in this dataset range from ~7 pc to ~940 pc —
+          meaning their light traveled between 23 and 3,000 years to reach us.
+        </dd>
+      </div>
+      <div class="glossary-item">
+        <dt>Detection bias</dt>
+        <dd>
+          Any systematic distortion in a dataset caused by the way observations are
+          made. TESS has strong detection biases toward: large planets (bigger transit
+          signal), short orbital periods (more transits per observation window), and
+          bright nearby stars (better signal-to-noise). This means the catalog is not
+          a fair sample of what actually exists — it is a sample of what TESS can see.
+        </dd>
+      </div>
+      <div class="glossary-item">
+        <dt>Insolation flux (S⊕)</dt>
+        <dd>
+          The amount of stellar energy hitting a planet's surface, measured relative
+          to Earth (1 S⊕). A planet receiving 2 S⊕ gets twice the energy Earth does.
+          This is a more physically complete measure of habitability than equilibrium
+          temperature alone because it accounts for the actual stellar luminosity
+          rather than assuming blackbody radiation.
+        </dd>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── FOOTER ─────────────────────────────────────────────────────────────── -->
+  <footer id="footer">
+    <p>
+      Data: <a href="https://exoplanetarchive.ipac.caltech.edu" target="_blank" rel="noopener">
+        NASA Exoplanet Archive
+      </a> · TESS confirmed planets (default parameters) · March 2026.
+    </p>
+    <p>
+      Course: COM-480 Data Visualization · EPFL ·
+      Mohamed Bouchnak · Hugo Heinkélé · Hong Wei · Gustavo Maia
+    </p>
+  </footer>
+
+  <!-- ── SCRIPTS ────────────────────────────────────────────────────────────── -->
+  <script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
+  <script src="https://cdn.jsdelivr.net/npm/crossfilter2@1.5"></script>
+  <script src="https://cdn.jsdelivr.net/npm/scrollama@3"></script>
+  <script type="module" src="js/main.js"></script>
+
+</body>
+</html>

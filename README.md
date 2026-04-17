@@ -221,6 +221,27 @@ You can view the prototype here:
 
 https://www.figma.com/design/XiKrvWYjWsO2yWcRMs0Gwi/Untitled?node-id=1-178&t=CFHI0z0vVjZ0NaNh-1
 
+## Launch the website
+
+The website is a static site, but it must be served over HTTP (not opened directly from the file system) because `js/main.js` is loaded as an ES module.
+
+From the project root, run **one** of the following commands, then open the printed URL in your browser:
+
+**Python 3** (pre-installed on most systems)
+```bash
+python -m http.server 8000
+```
+Then go to [http://localhost:8000](http://localhost:8000).
+
+**Node.js** (if installed)
+```bash
+npx serve .
+```
+
+**VS Code** — install the *Live Server* extension, right-click `index.html` → *Open with Live Server*.
+
+Once loaded, the site reads `data/PS_2026.03.20_03.49.15.csv` and renders all 762 TESS exoplanets.
+
 ## Milestone 3 (29th May, 5pm)
 
 **80% of the final grade**
