@@ -242,6 +242,8 @@ npx serve .
 
 Once loaded, the site reads `data/PS_2026.03.20_03.49.15.csv` and renders all 762 TESS exoplanets.
 
+you can also try with this link https://com-480-data-visualization.github.io/CosmoViz/
+
 ## Milestone 3 (29th May, 5pm)
 
 **80% of the final grade**
