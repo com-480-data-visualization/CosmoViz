@@ -103,7 +103,7 @@ The selected exoplanet will be compared with Earth through multiple visualizatio
 
 Our central visualization concept presents Earth surrounded by distant exoplanets.
 
-![Universe](images/universe_main.png)
+![Universe](images/universe_main.jpg)
 
 This interface is designed to feel interactive and engaging. Most users will likely explore exoplanets randomly at first, simply to observe how different known planets are from Earth.
 
