@@ -103,7 +103,7 @@ The selected exoplanet will be compared with Earth through multiple visualizatio
 
 Our central visualization concept presents Earth surrounded by distant exoplanets.
 
-Image 1
+![Universe View](images/universe_main.png)
 
 This interface is designed to feel interactive and engaging. Most users will likely explore exoplanets randomly at first, simply to observe how different known planets are from Earth.
 
@@ -113,7 +113,7 @@ When a user clicks on an exoplanet, they will be redirected to a page displaying
 
 The first visualization will be a spider (radar) chart comparing Earth and the selected exoplanet across several key attributes.
 
-Image 2
+![Spider chart comparison](images/spider_chart.png)
 
 This is an effective way to compare multiple characteristics simultaneously. The attributes used in this chart will include:
 
@@ -129,7 +129,7 @@ This comparison method also creates a somewhat game-like exploration experience,
 
 The page will also include a graph that displays a habitability score computed from several key parameters.
 
-Image 3
+![Similarity score graph](images/similarity_score.png)
 
 This score provides a simplified indicator of how suitable a planet might be for life based on its measured characteristics.
 
@@ -193,7 +193,7 @@ For example, we could introduce clustering visualizations that group exoplanets 
 - Gas giants
 - Ice giants
 
-Image 4
+![Cluster graph](images/cluster_graph.png)
 
 Additional clustering could be performed using other attributes, such as:
 
