@@ -40,7 +40,8 @@ function updateEarthLikeCount() {
   // Emit matching names so scatter can highlight them
   bus.emit("earth-like-highlight", matching.map(d => d.pl_name));
 
-  // List planet names if count is small enough
+  // List planet names if count is small enough, otherwise show actionable
+  // hints so the user understands *why* they see zero.
   const listEl = document.getElementById("earth-like-list");
   if (listEl) {
     if (matching.length > 0 && matching.length <= 12) {
@@ -50,9 +51,41 @@ function updateEarthLikeCount() {
     } else if (matching.length > 12) {
       listEl.textContent = `${matching.length} planets — hover the scatter to explore them`;
     } else {
-      listEl.innerHTML = `<span class="no-match">No planets match all criteria</span>`;
+      listEl.innerHTML = `
+        <div class="no-match">No planets match all criteria.</div>
+        <div class="no-match-hint">${noMatchHint()}</div>
+      `;
     }
   }
+}
+
+// Diagnose which axis is the binding constraint and suggest an action.
+function noMatchHint() {
+  const { radius, temp, period } = earthCriteria;
+  const inRadius = corePlanets.filter(d =>
+    d.pl_rade != null && d.pl_rade >= radius.min && d.pl_rade <= radius.max
+  ).length;
+  const inTemp = corePlanets.filter(d =>
+    d.pl_eqt != null && d.pl_eqt >= temp.min && d.pl_eqt <= temp.max
+  ).length;
+  const inPeriod = corePlanets.filter(d =>
+    d.pl_orbper != null && d.pl_orbper >= period.min && d.pl_orbper <= period.max
+  ).length;
+
+  const counts = [
+    { label: "period",      n: inPeriod },
+    { label: "temperature", n: inTemp   },
+    { label: "radius",      n: inRadius },
+  ].sort((a, b) => a.n - b.n);
+  const tightest = counts[0];
+
+  if (tightest.n === 0) {
+    return `No TESS planet matches the <strong>${tightest.label}</strong> range alone.
+            Try widening it.`;
+  }
+  return `The tightest single constraint is <strong>${tightest.label}</strong>
+          (${tightest.n} planets).
+          Earth-like is genuinely rare in the TESS catalog — try widening one bound.`;
 }
 
 // ── SLIDER WIRING ─────────────────────────────────────────────────────────────
@@ -86,44 +119,44 @@ function wireSlider(minId, maxId, minLabelId, maxLabelId, criterionKey, formatFn
   maxEl.addEventListener("input", sync);
 }
 
+// Defaults — single source of truth, used both at first render and on reset.
+const DEFAULTS = {
+  radius: { min: 0.8, max: 1.5 },
+  temp:   { min: 180, max: 350 },
+  period: { min: 10,  max: 500 },
+  insol:  { min: 0.5, max: 1.5 },
+};
+
 // ── RESET ─────────────────────────────────────────────────────────────────────
 function resetCriteria() {
-  const defaults = {
-    radius: { min: 0.8,  max: 1.5  },
-    temp:   { min: 200,  max: 320  },
-    period: { min: 200,  max: 500  },
-    insol:  { min: 0.5,  max: 1.5  },
-  };
+  Object.assign(earthCriteria.radius, DEFAULTS.radius);
+  Object.assign(earthCriteria.temp,   DEFAULTS.temp);
+  Object.assign(earthCriteria.period, DEFAULTS.period);
+  Object.assign(earthCriteria.insol,  DEFAULTS.insol);
 
-  Object.assign(earthCriteria.radius, defaults.radius);
-  Object.assign(earthCriteria.temp,   defaults.temp);
-  Object.assign(earthCriteria.period, defaults.period);
-  Object.assign(earthCriteria.insol,  defaults.insol);
-
-  // Sync DOM
-  const ids = [
-    ["r-min", 0.8],  ["r-max", 1.5],
-    ["t-min", 200],  ["t-max", 320],
-    ["p-min", 200],  ["p-max", 500],
+  // Sync DOM controls
+  const pairs = [
+    ["r-min", DEFAULTS.radius.min], ["r-max", DEFAULTS.radius.max],
+    ["t-min", DEFAULTS.temp.min],   ["t-max", DEFAULTS.temp.max],
+    ["p-min", DEFAULTS.period.min], ["p-max", DEFAULTS.period.max],
   ];
-  ids.forEach(([id, val]) => {
+  pairs.forEach(([id, val]) => {
     const el = document.getElementById(id);
     if (el) el.value = val;
   });
-  ["r-min-val","r-max-val"].forEach((id, i) => {
-    const el = document.getElementById(id);
-    if (el) el.textContent = [0.8, 1.5][i].toFixed(1);
-  });
-  ["t-min-val","t-max-val"].forEach((id, i) => {
-    const el = document.getElementById(id);
-    if (el) el.textContent = [200, 320][i];
-  });
-  ["p-min-val","p-max-val"].forEach((id, i) => {
-    const el = document.getElementById(id);
-    if (el) el.textContent = [200, 500][i];
-  });
+  setLabel("r-min-val", DEFAULTS.radius.min.toFixed(1));
+  setLabel("r-max-val", DEFAULTS.radius.max.toFixed(1));
+  setLabel("t-min-val", DEFAULTS.temp.min);
+  setLabel("t-max-val", DEFAULTS.temp.max);
+  setLabel("p-min-val", DEFAULTS.period.min);
+  setLabel("p-max-val", DEFAULTS.period.max);
 
   updateEarthLikeCount();
+}
+
+function setLabel(id, val) {
+  const el = document.getElementById(id);
+  if (el) el.textContent = val;
 }
 
 // ── BUILD HTML ────────────────────────────────────────────────────────────────
@@ -146,21 +179,21 @@ function buildSliderHTML(selector) {
 
     <div class="slider-row">
       <label>
-        Temperature: <strong><span id="t-min-val">200</span>–<span id="t-max-val">320</span> K</strong>
+        Temperature: <strong><span id="t-min-val">180</span>–<span id="t-max-val">350</span> K</strong>
       </label>
       <div class="dual-slider">
-        <input type="range" id="t-min" min="100" max="1500" step="10" value="200">
-        <input type="range" id="t-max" min="100" max="1500" step="10" value="320">
+        <input type="range" id="t-min" min="100" max="1500" step="10" value="180">
+        <input type="range" id="t-max" min="100" max="1500" step="10" value="350">
       </div>
     </div>
 
     <div class="slider-row">
       <label>
-        Orbital period: <strong><span id="p-min-val">200</span>–<span id="p-max-val">500</span> days</strong>
+        Orbital period: <strong><span id="p-min-val">10</span>–<span id="p-max-val">500</span> days</strong>
       </label>
       <div class="dual-slider">
-        <input type="range" id="p-min" min="10" max="500" step="5" value="200">
-        <input type="range" id="p-max" min="10" max="500" step="5" value="500">
+        <input type="range" id="p-min" min="1" max="500" step="1" value="10">
+        <input type="range" id="p-max" min="1" max="500" step="1" value="500">
       </div>
     </div>
 

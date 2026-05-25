@@ -27,6 +27,7 @@
       <a href="#bias-section">Bias lens</a>
       <a href="#skymap-section">Sky map</a>
       <a href="#timeline-section">Timeline</a>
+      <a href="#sandbox-section">Build</a>
     </div>
     <span class="nav-data">
       <span id="total-planet-count">762</span> TESS exoplanets · NASA Archive 2026
@@ -135,21 +136,22 @@
     </div>
   </section>
 
-  <!-- ── CONTROL BAR ───────────────────────────────────────────────────────── -->
-  <div id="control-bar">
-    <div class="control-bar-left">
-      <span id="count-number">—</span>
-      <span class="control-bar-label"> planets shown</span>
-    </div>
-    <div class="control-bar-note">
-      Hover any planet for details · Click to pin · Use sliders to define "Earth-like"
-    </div>
-  </div>
-
   <!-- ══════════════════════════════════════════════════════════════════════════
        VIEW 2: PLANET EXPLORER SCATTER
   ═══════════════════════════════════════════════════════════════════════════════ -->
   <section id="explorer-section">
+    <!-- Control bar sits *inside* the section so it only sticks while the
+         explorer is in view, not across unrelated sections below. -->
+    <div id="control-bar">
+      <div class="control-bar-left">
+        <span id="count-number">—</span>
+        <span class="control-bar-label"> planets shown</span>
+      </div>
+      <div class="control-bar-note">
+        Hover any planet for details · Click to pin · Use sliders to define "Earth-like"
+      </div>
+    </div>
+
     <h2>Planet explorer</h2>
     <p class="section-subtitle">
       Each dot is one exoplanet. Position encodes its physical character.
@@ -461,6 +463,60 @@
     </div>
   </section>
 
+  <!-- ══════════════════════════════════════════════════════════════════════════
+       VIEW 6: SANDBOX — BUILD YOUR OWN PLANET
+  ═══════════════════════════════════════════════════════════════════════════════ -->
+  <section id="sandbox-section">
+    <h2>Build your own planet</h2>
+    <p class="section-subtitle">
+      Pick a star, tune the planet body and orbit, and watch the equilibrium
+      temperature, insolation, period and Earth-similarity update in real time.
+      Designed to make the physics of habitability tangible — most "obviously
+      Earth-like" parameter sets fall apart the moment you change the host star.
+    </p>
+
+    <div id="sandbox-container"></div>
+
+    <!-- Reading guide -->
+    <div class="reading-guide" style="margin-top:1.6rem;">
+      <div class="reading-guide-grid">
+        <div class="rg-item">
+          <span class="rg-label">Equilibrium temperature</span>
+          <span class="rg-desc">
+            Derived from the Stefan–Boltzmann balance assuming a 30 % Bond
+            albedo: T<sub>eq</sub> = T<sub>★</sub> · √(R<sub>★</sub>/2a) · (1−A)<sup>¼</sup>.
+            Surface temperature is typically higher once a real atmosphere is added.
+          </span>
+        </div>
+        <div class="rg-item">
+          <span class="rg-label">Insolation flux</span>
+          <span class="rg-desc">
+            S = L<sub>★</sub>/a² in Earth units. A planet with S = 2 receives twice
+            the energy Earth does. The habitable zone roughly corresponds to
+            S between 0.35 and 1.1 for Sun-like stars.
+          </span>
+        </div>
+        <div class="rg-item">
+          <span class="rg-label">Habitable zone bounds</span>
+          <span class="rg-desc">
+            Inner edge ≈ 0.95 · √L (Kopparapu et al. 2013, recent-Venus limit),
+            outer edge ≈ 1.67 · √L (early-Mars limit). HZ width scales with the
+            square root of stellar luminosity — bright stars push the zone outward,
+            cool dwarfs squeeze it inward.
+          </span>
+        </div>
+        <div class="rg-item">
+          <span class="rg-label">Surface gravity (g⊕)</span>
+          <span class="rg-desc">
+            Computed as M/R² in Earth units. A planet with 1 g⊕ has the same
+            gravity as Earth. Very high gravity makes liftoff (and biological
+            mobility) hard; very low gravity makes it hard to retain an atmosphere.
+          </span>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <!-- ── GLOSSARY ───────────────────────────────────────────────────────────── -->
   <section id="glossary-section">
     <h2>Key concepts</h2>
@@ -563,6 +619,7 @@
 
   <!-- ── SCRIPTS ────────────────────────────────────────────────────────────── -->
   <script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
+  <script src="https://cdn.jsdelivr.net/npm/d3-geo-projection@4"></script>
   <script src="https://cdn.jsdelivr.net/npm/crossfilter2@1.5"></script>
   <script src="https://cdn.jsdelivr.net/npm/scrollama@3"></script>
   <script type="module" src="js/main.js"></script>

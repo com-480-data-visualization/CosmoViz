@@ -1,6 +1,9 @@
 // legend.js — color constants and legend renderer
 // Imported by every view that needs consistent color encoding.
 
+import { EARTH, setSelected }    from "./state.js";
+import { showDetailCard }        from "./tooltip.js";
+
 // ── SIZE CLASS ─────────────────────────────────────────────────────────────
 // Categorical hue, colorblind-safe (checked against Coblis deuteranopia sim)
 export const SIZE_COLORS = {
@@ -54,10 +57,15 @@ export function renderLegend(selector) {
     row.append("span").text(cls);
   });
 
-  // ── Earth reference ──
+  // ── Earth reference (clickable) ──
   const earthRow = container.append("div")
     .attr("class", "legend-section")
-    .append("div").attr("class", "legend-row earth-row");
+    .append("div").attr("class", "legend-row earth-row")
+    .attr("title", "View Earth's data + comparison")
+    .on("click", () => {
+      setSelected(EARTH);
+      showDetailCard(EARTH, { scrollIntoView: true });
+    });
 
   const earthSvg = earthRow.append("svg").attr("width", 14).attr("height", 14);
   earthSvg.append("rect")
@@ -67,6 +75,7 @@ export function renderLegend(selector) {
     .attr("stroke", EARTH_STROKE)
     .attr("stroke-width", 1.5);
   earthRow.append("span").text("Earth (reference)");
+  earthRow.append("span").attr("class", "earth-row-hint").text(" ↗");
 
   // ── Mass unknown indicator ──
   const noMassSection = container.append("div").attr("class", "legend-section");

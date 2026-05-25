@@ -4,8 +4,7 @@
 
 import { allPlanets }                          from "./data.js";
 import { tempColorScale }                      from "./legend.js";
-import { bus, setHovered, setSelected, notifyFilterChange } from "./state.js";
-import { dims }                                               from "./data.js";
+import { bus, setHovered, setSelected }        from "./state.js";
 import { showTooltip, moveTooltip, hideTooltip, showDetailCard }  from "./tooltip.js";
 
 const M = { top: 20, right: 20, bottom: 30, left: 20 };
@@ -105,14 +104,9 @@ export function initSkyMap(selector) {
     .on("mouseout", () => { setHovered(null); hideTooltip(); })
     .on("click", (event, d) => {
       event.stopPropagation();
-      // Filter the explorer scatter to this host star system
-      if (dims.starClass) {
-        // Filter all crossfilter dims by hostname via a custom dim if available
-        // Fallback: use the built-in notifyFilterChange after setting selected
-      }
       setSelected(d);
-      showDetailCard(d);
-      // Highlight system mates
+      showDetailCard(d, { scrollIntoView: true });
+      // Highlight system mates across views
       bus.emit("system-selected", d.hostname);
     });
 

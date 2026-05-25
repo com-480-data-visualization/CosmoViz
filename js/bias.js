@@ -4,7 +4,7 @@
 
 import { corePlanets, filteredPlanets } from "./data.js";
 import { SIZE_COLORS, EARTH_COLOR, EARTH_STROKE, yearColorScale } from "./legend.js";
-import { bus, setHovered, setSelected, selectedPlanet } from "./state.js";
+import { bus, setHovered, setSelected, selectedPlanet, EARTH, earthCriteria } from "./state.js";
 import { showTooltip, moveTooltip, hideTooltip, showDetailCard } from "./tooltip.js";
 
 const M = { top: 30, right: 50, bottom: 70, left: 80 };
@@ -41,7 +41,7 @@ function renderBias(data, maxYear) {
       event.stopPropagation();
       const next = d === selectedPlanet ? null : d;
       setSelected(next);
-      showDetailCard(next);
+      showDetailCard(next, { scrollIntoView: true });
     })
     .transition().duration(500)
     .attr("cx", d => xScale(d.pl_orbper))
@@ -164,9 +164,13 @@ export function initBias(selector) {
     .attr("fill", EARTH_STROKE)
     .text("Earth-analog zone");
 
-  // ── Earth marker ──────────────────────────────────────────────────────────
-  const earthG = plotArea.append("g").attr("class", "earth-ref")
+  // ── Earth marker (clickable) ──────────────────────────────────────────────
+  const earthG = plotArea.append("g").attr("class", "earth-ref earth-clickable")
     .attr("transform", `translate(${xScale(365.25)},${yScale(1.0)})`);
+
+  earthG.append("circle")
+    .attr("r", 12).attr("fill", "transparent")
+    .style("pointer-events", "all");
 
   earthG.append("rect")
     .attr("x", -6).attr("y", -6).attr("width", 12).attr("height", 12)
@@ -175,6 +179,16 @@ export function initBias(selector) {
 
   earthG.append("text").attr("class", "earth-label")
     .attr("x", 10).attr("y", 4).text("Earth");
+
+  earthG.style("cursor", "pointer")
+    .on("mouseover", (event) => { setHovered(EARTH); showTooltip(event, EARTH); })
+    .on("mousemove",  (event) => moveTooltip(event))
+    .on("mouseout",   ()      => { setHovered(null); hideTooltip(); })
+    .on("click",     (event)  => {
+      event.stopPropagation();
+      setSelected(EARTH);
+      showDetailCard(EARTH, { scrollIntoView: true });
+    });
 
   // ── Annotate the single >300d planet ──────────────────────────────────────
   const longPeriod = corePlanets.find(d => d.pl_orbper > 300);
@@ -187,6 +201,30 @@ export function initBias(selector) {
       .attr("x", 10).attr("y", 4)
       .text(`${longPeriod.pl_name} (${longPeriod.pl_orbper.toFixed(0)}d)`);
   }
+
+  // ── Earth-like criteria rectangle (live overlay on period × radius) ─────
+  const critRect = plotArea.append("rect")
+    .attr("class", "criteria-rect")
+    .attr("fill", "rgba(74, 197, 214, 0.06)")
+    .attr("stroke", "rgba(74, 197, 214, 0.55)")
+    .attr("stroke-width", 1)
+    .attr("stroke-dasharray", "4 3")
+    .attr("pointer-events", "none")
+    .attr("opacity", 0);
+
+  function updateCriteriaRect() {
+    const { radius, period } = earthCriteria;
+    const x1 = xScale(period.min), x2 = xScale(period.max);
+    const y1 = yScale(radius.max), y2 = yScale(radius.min);
+    critRect
+      .attr("x", x1).attr("y", y1)
+      .attr("width",  Math.max(0, x2 - x1))
+      .attr("height", Math.max(0, y2 - y1))
+      .attr("opacity", 1);
+  }
+
+  bus.on("earth-like-highlight", () => updateCriteriaRect());
+  updateCriteriaRect();
 
   // ── Year slider controls (DOM already in HTML) ────────────────────────────
   d3.select("#year-slider").on("input", function () {
