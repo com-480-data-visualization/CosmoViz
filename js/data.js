@@ -137,10 +137,19 @@ export async function loadData() {
 
   return { allPlanets, corePlanets };
 }
+import { activeSizeClasses } from "./state.js";
 
 // ── FILTERED PLANET ACCESSOR ──────────────────────────────────────────────────
 // Always returns the current crossfilter-filtered array.
 // Uses radius dim as the "all" dimension (no radius filter active by default).
 export function filteredPlanets() {
-  return dims.radius.top(Infinity);
+   let planets = dims.radius.top(Infinity);
+
+  if (activeSizeClasses && activeSizeClasses.size > 0) {
+    planets = planets.filter(d =>
+      activeSizeClasses.has(d.size_class)
+    );
+  }
+
+  return planets;
 }

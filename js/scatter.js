@@ -270,6 +270,16 @@ export function initScatter(selector) {
   let ghostG = null;
   bus.on("sandbox-changed", planet => {
     if (!plotArea || !planet) return;
+    const isEarthLike =
+    Math.abs(planet.pl_eqt - EARTH.pl_eqt) < 1 &&
+    Math.abs(planet.pl_rade - EARTH.pl_rade) < 0.01;
+
+    if (isEarthLike) {
+      if (ghostG) ghostG.attr("display", "none");
+      return;
+    }
+
+    if (ghostG) ghostG.attr("display", null);
     if (!ghostG) {
       ghostG = plotArea.append("g")
         .attr("class", "ghost-marker")

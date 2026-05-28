@@ -12,8 +12,8 @@ let W, H, svg, plotArea, xScale, yScale, circles;
 
 // ── SCALES (same domain as scatter for visual continuity) ─────────────────────
 function buildScales(w, h) {
-  xScale = d3.scaleLog().domain([100, 4000]).range([0, w]).clamp(true);
-  yScale = d3.scaleLog().domain([0.5, 26]).range([h, 0]).clamp(true);
+  xScale = d3.scaleSymlog().domain([100, 4000]).constant(200).range([0, w]);
+  yScale = d3.scaleSymlog().domain([0.5, 26]).constant(1).range([h, 0]);
 }
 
 // ── STATIC ANNOTATIONS ───────────────────────────────────────────────────────
@@ -153,12 +153,12 @@ export function initNarrative() {
   plotArea.append("g")
     .attr("class", "axis x-axis")
     .attr("transform", `translate(0,${H})`)
-    .call(d3.axisBottom(xScale).ticks(5, "~s")
-      .tickFormat(d => `${d3.format(".0f")(d)} K`));
+    .call(d3.axisBottom(xScale).tickValues([100, 200, 400, 800, 1600, 3200])
+      .tickFormat(d => `${d} K`));
 
   plotArea.append("g")
     .attr("class", "axis y-axis")
-    .call(d3.axisLeft(yScale).ticks(5)
+    .call(d3.axisLeft(yScale).tickValues([0.5, 1, 2, 4, 8, 16, 24])
       .tickFormat(d => `${d} R⊕`));
 
   svg.append("text").attr("class", "axis-label")
