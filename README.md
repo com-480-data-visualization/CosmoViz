@@ -248,6 +248,8 @@ you can also try with this link https://com-480-data-visualization.github.io/Cos
 
 **80% of the final grade**
 
+**Process book:** [CosmoViz_Process_Book.pdf](CosmoViz_Process_Book.pdf) — our full write-up of the project, from the first sketches to the final visualization. It can also be viewed directly in the browser [here](https://com-480-data-visualization.github.io/CosmoViz/CosmoViz_Process_Book.pdf).
+
 
 ## Late policy
 
