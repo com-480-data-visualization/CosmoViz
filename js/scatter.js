@@ -120,8 +120,8 @@ export function initScatter(selector) {
   W = totalW  - M.left - M.right;
   H = totalH  - M.top  - M.bottom;
 
-  xScale = d3.scaleLog().domain([100, 4000]).range([0, W]).clamp(true);
-  yScale = d3.scaleLog().domain([0.5, 26]).range([H, 0]).clamp(true);
+  xScale = d3.scaleSymlog().domain([100, 4000]).constant(200).range([0, W]);
+  yScale = d3.scaleSymlog().domain([0.5, 26]).constant(1).range([H, 0]);
 
   svg = d3.select(selector).append("svg")
     .attr("id", "scatter-svg")
@@ -157,18 +157,12 @@ export function initScatter(selector) {
   // ── Axes ─────────────────────────────────────────────────────────────────
   plotArea.append("g").attr("class", "axis x-axis")
     .attr("transform", `translate(0,${H})`)
-    .call(
-      d3.axisBottom(xScale)
-        .ticks(6, "~s")
-        .tickFormat(d => `${d3.format(".0f")(d)} K`)
-    );
+    .call(d3.axisBottom(xScale).tickValues([100, 200, 400, 800, 1600, 3200])
+      .tickFormat(d => `${d} K`));
 
   plotArea.append("g").attr("class", "axis y-axis")
-    .call(
-      d3.axisLeft(yScale)
-        .ticks(6)
-        .tickFormat(d => `${d} R⊕`)
-    );
+    .call(d3.axisLeft(yScale).tickValues([0.5, 1, 2, 4, 8, 16, 24])
+      .tickFormat(d => `${d} R⊕`));
 
   svg.append("text").attr("class", "axis-label")
     .attr("x", M.left + W / 2).attr("y", totalH - 8)

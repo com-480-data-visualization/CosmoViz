@@ -96,10 +96,10 @@ export function initBias(selector) {
   W = totalW - M.left - M.right;
   H = totalH - M.top  - M.bottom;
 
-  // X: orbital period [days], log
-  xScale = d3.scaleLog().domain([0.2, 600]).range([0, W]).clamp(true);
-  // Y: planet radius [R⊕], log — same domain as scatter for visual continuity
-  yScale = d3.scaleLog().domain([0.5, 26]).range([H, 0]).clamp(true);
+  // X: orbital period [days]
+  xScale = d3.scaleSymlog().domain([0.2, 600]).constant(8).range([0, W]);
+  // Y: planet radius [R⊕] — same domain as scatter for visual continuity
+  yScale = d3.scaleSymlog().domain([0.5, 26]).constant(1).range([H, 0]); 
 
   svg = d3.select(selector).append("svg")
     .attr("id", "bias-svg")
@@ -113,27 +113,27 @@ export function initBias(selector) {
     .attr("transform", `translate(0,${H})`)
     .call(
       d3.axisBottom(xScale)
-        .ticks(7, "~s")
-        .tickFormat(d => `${d3.format(".1~f")(d)}d`)
+        .tickValues([1, 3, 10, 27, 100, 365, 600])
+        .tickFormat(d => `${d}d`)
     );
 
   plotArea.append("g").attr("class", "axis y-axis")
     .call(
       d3.axisLeft(yScale)
-        .ticks(5)
+        .tickValues([0.5, 1, 2, 4, 8, 16, 24])
         .tickFormat(d => `${d} R⊕`)
     );
 
   svg.append("text").attr("class", "axis-label")
     .attr("x", M.left + W / 2).attr("y", totalH - 8)
     .attr("text-anchor", "middle")
-    .text("Orbital period (days) — log scale");
+    .text("Orbital period (days)");
 
   svg.append("text").attr("class", "axis-label")
     .attr("transform", "rotate(-90)")
     .attr("x", -(M.top + H / 2)).attr("y", 16)
     .attr("text-anchor", "middle")
-    .text("Planet radius (R⊕) — log scale");
+    .text("Planet radius (R⊕)");
 
   // ── TESS ~27-day observability limit ─────────────────────────────────────
   plotArea.append("line").attr("class", "annotation-line tess-line")
